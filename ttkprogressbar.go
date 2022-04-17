@@ -21,14 +21,14 @@ import (
 )
 
 type ProgressBar struct {
-	Total          int //The total number of steps to completion.
-	Total_complet  int
-	Width          int //the number of terminal columns for displaying a bar excluding other tokens. Defaults to total steps.
-	RealWidth      int
-	Token_message  string
-	Token_progress string
-	Complet        string
-	Uncomplet      string
+	Total          int    // The total number of steps to completion.
+	Total_complet  int    // The number of steps completed
+	Width          int    // The number of terminal columns for displaying a bar excluding other tokens. Defaults to total steps.
+	RealWidth      int    // The real width including tokens
+	Token_message  string // Token message
+	Token_progress string // //
+	Complet        string // character for complete steps [========]
+	Uncomplet      string // character for uncplete steps [===     ]
 }
 
 // Bar Print initial bar
@@ -40,9 +40,12 @@ func (this *ProgressBar) Bar() {
 
 }
 
+// private function
 func SaveCursorPosition() {
 	fmt.Print("\033[s")
 }
+
+// private function
 
 func RestoreCursorPosition() {
 	fmt.Print("\033[u\033[K")
@@ -51,7 +54,17 @@ func RestoreCursorPosition() {
 // Advance one step in progress bar
 func (this *ProgressBar) Advance() {
 	this.Total_complet += 1
-	InitializeBar(this)
+
+	PrintBar(this)
+}
+
+// SetPercent printbar in specyfic percent
+// get percent in int type
+func (this *ProgressBar) SetPercent(percent int) {
+	advance := percent * this.Width / 100
+	fmt.Println(advance)
+	this.Total_complet = advance
+
 	PrintBar(this)
 }
 
